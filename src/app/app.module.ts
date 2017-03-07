@@ -2,11 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { combineReducers, INITIAL_REDUCER, Store, StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
 import { AppComponent } from './app.component';
-import { GET_DATA, networkEffectReducer, NetworkEffectService } from './network-effect.service';
+import { networkEffectReducer, NetworkEffectService } from './network-effect.service';
+
 
 @NgModule({
   declarations: [
@@ -17,19 +18,22 @@ import { GET_DATA, networkEffectReducer, NetworkEffectService } from './network-
     FormsModule,
     HttpModule,
     EffectsModule.run(NetworkEffectService),
-    StoreModule.provideStore(combineReducers({
-      data: networkEffectReducer
-    }), {
+    StoreModule.provideStore(reducer, {
       data: {}
     })
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-  constructor(store: Store<any>) {
-    store.select('data')
-      .subscribe(d => console.log('data', d));
-    store.dispatch({type: GET_DATA })
-  }
+export class AppModule {}
+
+/**
+ *
+ * Solution to AOT functions borrowed from
+ * https://github.com/ngrx/store/issues/190
+ */
+export function reducer(lazyLoaded = {}) {
+  let allReducers = Object.assign({
+    data: networkEffectReducer
+  });
+  return combineReducers(allReducers);
 }

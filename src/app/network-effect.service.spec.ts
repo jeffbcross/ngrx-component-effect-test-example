@@ -2,7 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { NetworkEffectService } from './network-effect.service';
 
-describe('NetworkEffectService', () => {
+xdescribe('NetworkEffectService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [NetworkEffectService]
